@@ -6,6 +6,8 @@ import android.util.AttributeSet;
 
 public class OpenGL2DSurfaceView extends GLSurfaceView {
 
+	protected Renderer mRenderer;
+
 	public OpenGL2DSurfaceView(Context context) {
 		super(context);
 		init();
@@ -18,7 +20,8 @@ public class OpenGL2DSurfaceView extends GLSurfaceView {
 
 	protected void init() {
 		setEGLContextClientVersion(2);
-		setRenderer(new OpenGL2DRenderer());
+		mRenderer = new OpenGL2DRenderer();
+		setRenderer(mRenderer);
 	}
 
 }

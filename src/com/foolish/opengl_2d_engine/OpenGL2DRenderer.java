@@ -12,10 +12,15 @@ public class OpenGL2DRenderer implements Renderer {
 	protected static final int DEFAULT_BG_COLOR = Color.argb(255, 0, 0, 0);
 	protected int mClearColor;
 
+	private Shape mTriangle;
+
 	@Override
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		mClearColor = DEFAULT_BG_COLOR;
 		clearColor();
+
+		mTriangle = new Triangle(-1, 1, 2, 2);
+		mTriangle.setColor(0, 255, 255, 255);
 	}
 
 	@Override
@@ -26,6 +31,8 @@ public class OpenGL2DRenderer implements Renderer {
 	@Override
 	public void onDrawFrame(GL10 gl) {
 		GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+
+		mTriangle.draw();
 	}
 
 	protected void clearColor() {
@@ -36,6 +43,15 @@ public class OpenGL2DRenderer implements Renderer {
 	public void clear(int color) {
 		mClearColor = color;
 		clearColor();
+	}
+
+	public static int loadShader(int type, String shaderCode) {
+		int shader = GLES20.glCreateShader(type);
+
+		GLES20.glShaderSource(shader, shaderCode);
+		GLES20.glCompileShader(shader);
+
+		return shader;
 	}
 
 }
