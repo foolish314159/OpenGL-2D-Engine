@@ -6,8 +6,9 @@ import android.opengl.GLES20;
 
 public abstract class Shape {
 
-	private static final String VERTEX_SHADER_CODE = "attribute vec4 vPosition;"
-			+ "void main() {" + "  gl_Position = vPosition;" + "}";
+	private static final String VERTEX_SHADER_CODE = "uniform mat4 uMVPMatrix;"
+			+ "attribute vec4 vPosition;" + "void main() {"
+			+ "  gl_Position = uMVPMatrix * vPosition;" + "}";
 
 	private static final String FRAGMENT_SHADER_CODE = "precision mediump float;"
 			+ "uniform vec4 vColor;"
@@ -40,6 +41,7 @@ public abstract class Shape {
 	protected int mProgram;
 	protected int mPositionHandle;
 	protected int mColorHandle;
+	protected int mMVPMatrixHandle;
 
 	protected FloatBuffer mVertexBuffer;
 
@@ -76,14 +78,20 @@ public abstract class Shape {
 		GLES20.glLinkProgram(mProgram);
 	}
 
-	public void draw() {
+	public void draw(float[] mvpMatrix) {
 		GLES20.glUseProgram(mProgram);
+		
 		mPositionHandle = GLES20.glGetAttribLocation(mProgram, "vPosition");
 		GLES20.glEnableVertexAttribArray(mPositionHandle);
 		GLES20.glVertexAttribPointer(mPositionHandle, COORDS_PER_VERTEX,
 				GLES20.GL_FLOAT, false, 0, mVertexBuffer);
+		
 		mColorHandle = GLES20.glGetUniformLocation(mProgram, "vColor");
 		GLES20.glUniform4fv(mColorHandle, 1, mShapeColor, 0);
+		
+		mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix");
+		GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvpMatrix, 0);
+		
 		GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, VERTEX_COUNT);
 		GLES20.glDisableVertexAttribArray(mPositionHandle);
 	}
