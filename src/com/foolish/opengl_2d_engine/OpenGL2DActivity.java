@@ -2,7 +2,6 @@ package com.foolish.opengl_2d_engine;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -11,7 +10,7 @@ import android.view.WindowManager;
 
 public class OpenGL2DActivity extends Activity {
 
-	protected GLSurfaceView mGLView;
+	protected OpenGL2DSurfaceView mGLView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
