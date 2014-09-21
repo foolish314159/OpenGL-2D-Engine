@@ -11,17 +11,17 @@ public class OpenGL2DSurfaceView extends GLSurfaceView {
 
 	public OpenGL2DSurfaceView(Context context) {
 		super(context);
-		init();
+		init(context);
 	}
 
 	public OpenGL2DSurfaceView(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		init();
+		init(context);
 	}
 
-	protected void init() {
+	protected void init(Context context) {
 		setEGLContextClientVersion(2);
-		mRenderer = new OpenGL2DRenderer();
+		mRenderer = new OpenGL2DRenderer(context);
 		setRenderer(mRenderer);
 	}
 

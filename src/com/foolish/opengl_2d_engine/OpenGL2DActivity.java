@@ -39,4 +39,16 @@ public class OpenGL2DActivity extends Activity {
 		getWindow().getDecorView().setSystemUiVisibility(uiOptions);
 	}
 
+	@Override
+	protected void onResume() {
+		super.onResume();
+		mGLView.onResume();
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		mGLView.onPause();
+	}
+
 }

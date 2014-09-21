@@ -55,13 +55,10 @@ public abstract class Shape {
 		mWidth = w;
 		mHeight = h;
 		VERTEX_COUNT = vertexCount;
-
-		init();
 	}
 
 	public Shape(Vector2f pos, float w, float h, int vertexCount) {
 		this(pos.x, pos.y, w, h, vertexCount);
-		init();
 	}
 
 	protected void init() {

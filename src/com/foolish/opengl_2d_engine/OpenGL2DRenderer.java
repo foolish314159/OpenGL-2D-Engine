@@ -3,10 +3,14 @@ package com.foolish.opengl_2d_engine;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView.Renderer;
 import android.opengl.Matrix;
+import android.util.Log;
 
 public class OpenGL2DRenderer implements Renderer {
 
@@ -20,15 +24,34 @@ public class OpenGL2DRenderer implements Renderer {
 
 	protected volatile float mCameraX = 0f, mCameraY = 0f, mCameraZ = 0f;
 
-	private Shape mTriangle;
+	protected Context mContext;
+
+	// private Shape mTriangle;
+	// private Shape mRectangle;
+	private Sprite mBackground;
+	private Sprite mSprite;
+
+	public OpenGL2DRenderer(Context context) {
+		mContext = context;
+	}
 
 	@Override
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-		mClearColor = DEFAULT_BG_COLOR;
-		clearColor();
+		clear(Color.RED);
 
-		mTriangle = new Triangle(-1.6f, 1, 3.2f, 2);
-		mTriangle.setColor(255, 255, 0, 255);
+		// mTriangle = new Triangle(-1.5f, 0.5f, 1, 1);
+		// mTriangle.setColor(255, 255, 0, 255);
+		//
+		// mRectangle = new Rectangle(0, 0.3f, 1, 1);
+		// mRectangle.setColor(255, 0, 0, 255);
+		Bitmap bmp = BitmapFactory.decodeResource(mContext.getResources(),
+				R.drawable.ic_launcher);
+		Bitmap bmpBg = BitmapFactory.decodeResource(mContext.getResources(),
+				R.drawable.tulips);
+		mBackground = new Sprite(-1.6f, 1, 3.2f, 2, bmpBg);
+		mBackground.init();
+		mSprite = new Sprite(0, 0.5f, .5f, .5f, bmp);
+		mSprite.init();
 	}
 
 	@Override
@@ -48,7 +71,10 @@ public class OpenGL2DRenderer implements Renderer {
 		Matrix.translateM(mViewMatrix, 0, mCameraX, mCameraY, mCameraZ);
 		Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
 
-		mTriangle.draw(mMVPMatrix);
+		// mTriangle.draw(mMVPMatrix);
+		// mRectangle.draw(mMVPMatrix);
+		mBackground.draw(mMVPMatrix);
+		// mSprite.draw(mMVPMatrix);
 	}
 
 	protected void clearColor() {
@@ -74,6 +100,29 @@ public class OpenGL2DRenderer implements Renderer {
 		GLES20.glCompileShader(shader);
 
 		return shader;
+	}
+
+	/**
+	 * Utility method for debugging OpenGL calls. Provide the name of the call
+	 * just after making it:
+	 * 
+	 * <pre>
+	 * mColorHandle = GLES20.glGetUniformLocation(mProgram, &quot;vColor&quot;);
+	 * MyGLRenderer.checkGlError(&quot;glGetUniformLocation&quot;);
+	 * </pre>
+	 * 
+	 * If the operation is not successful, the check throws an error.
+	 * 
+	 * @param glOperation
+	 *            - Name of the OpenGL call to check.
+	 */
+	public static void checkGlError(String glOperation) {
+		int error;
+		while ((error = GLES20.glGetError()) != GLES20.GL_NO_ERROR) {
+			Log.e(OpenGL2DRenderer.class.getName(), glOperation + ": glError "
+					+ error);
+			throw new RuntimeException(glOperation + ": glError " + error);
+		}
 	}
 
 }
