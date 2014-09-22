@@ -7,6 +7,7 @@ import java.nio.FloatBuffer;
 import android.graphics.Bitmap;
 import android.opengl.GLES20;
 import android.opengl.GLUtils;
+import android.opengl.Matrix;
 
 public class Sprite extends Rectangle {
 
@@ -23,6 +24,8 @@ public class Sprite extends Rectangle {
 
 	private static final float UV[] = { 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
 			1.0f, 0.0f };
+
+	protected int mTextureId;
 
 	protected FloatBuffer mUVBuffer;
 
@@ -52,8 +55,9 @@ public class Sprite extends Rectangle {
 
 		int[] textureNames = new int[1];
 		GLES20.glGenTextures(1, textureNames, 0);
+		mTextureId = textureNames[0] - 1;
 
-		GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+		GLES20.glActiveTexture(GLES20.GL_TEXTURE0 + mTextureId);
 		GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureNames[0]);
 
 		GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,
@@ -81,12 +85,14 @@ public class Sprite extends Rectangle {
 	}
 
 	@Override
-	public void draw(float[] mvpMatrix) {
-		GLES20.glUseProgram(mProgram);
+	public void draw(float[] mvpMatrix) {	
+		Matrix.multiplyMM(mvpMatrix, 0, mvpMatrix, 0, mModelMatrix, 0);
 		
+		GLES20.glUseProgram(mProgram);
+
 		GLES20.glEnable(GLES20.GL_BLEND);
 		GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
-		
+
 		mPositionHandle = GLES20.glGetAttribLocation(mProgram, "vPosition");
 		GLES20.glEnableVertexAttribArray(mPositionHandle);
 
@@ -105,13 +111,13 @@ public class Sprite extends Rectangle {
 		OpenGL2DRenderer.checkGlError("glUniformMatrix4fv");
 
 		mSamplerLoc = GLES20.glGetUniformLocation(mProgram, "s_texture");
-		GLES20.glUniform1i(mSamplerLoc, 0);
+		GLES20.glUniform1i(mSamplerLoc, mTextureId);
 
 		GLES20.glDrawElements(GLES20.GL_TRIANGLES, INDEX_ORDER.length,
 				GLES20.GL_UNSIGNED_SHORT, mIndexBuffer);
 		GLES20.glDisableVertexAttribArray(mPositionHandle);
 		GLES20.glDisableVertexAttribArray(mTexCoordLoc);
-		
+
 		GLES20.glDisable(GLES20.GL_BLEND);
 	}
 

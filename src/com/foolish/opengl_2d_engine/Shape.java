@@ -3,6 +3,7 @@ package com.foolish.opengl_2d_engine;
 import java.nio.FloatBuffer;
 
 import android.opengl.GLES20;
+import android.opengl.Matrix;
 
 public abstract class Shape {
 
@@ -45,6 +46,8 @@ public abstract class Shape {
 
 	protected FloatBuffer mVertexBuffer;
 
+	protected float[] mModelMatrix = new float[16];
+	
 	protected float mShapeColor[];
 
 	protected Vector3f mPos;
@@ -55,6 +58,8 @@ public abstract class Shape {
 		mWidth = w;
 		mHeight = h;
 		VERTEX_COUNT = vertexCount;
+		
+		Matrix.setIdentityM(mModelMatrix, 0);
 	}
 
 	public Shape(Vector2f pos, float w, float h, int vertexCount) {
@@ -75,22 +80,10 @@ public abstract class Shape {
 		GLES20.glLinkProgram(mProgram);
 	}
 
-	public void draw(float[] mvpMatrix) {
-		GLES20.glUseProgram(mProgram);
-		
-		mPositionHandle = GLES20.glGetAttribLocation(mProgram, "vPosition");
-		GLES20.glEnableVertexAttribArray(mPositionHandle);
-		GLES20.glVertexAttribPointer(mPositionHandle, COORDS_PER_VERTEX,
-				GLES20.GL_FLOAT, false, 0, mVertexBuffer);
-		
-		mColorHandle = GLES20.glGetUniformLocation(mProgram, "vColor");
-		GLES20.glUniform4fv(mColorHandle, 1, mShapeColor, 0);
-		
-		mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix");
-		GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvpMatrix, 0);
-		
-		GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, VERTEX_COUNT);
-		GLES20.glDisableVertexAttribArray(mPositionHandle);
+	public abstract void draw(float[] mvpMatrix);
+	
+	public Vector3f getPos() {
+		return mPos;
 	}
 
 	public void setColor(int r, int g, int b, int a) {
@@ -98,5 +91,9 @@ public abstract class Shape {
 		mShapeColor[1] = g / 255.0f;
 		mShapeColor[2] = b / 255.0f;
 		mShapeColor[3] = a / 255.0f;
+	}
+
+	public void translate(float x, float y) {
+		Matrix.translateM(mModelMatrix, 0, x, y, 0);
 	}
 }

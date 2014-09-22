@@ -3,6 +3,9 @@ package com.foolish.opengl_2d_engine;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import android.opengl.GLES20;
+import android.opengl.Matrix;
+
 public class Triangle extends Shape {
 
 	public Triangle(float x, float y, float w, float h) {
@@ -31,6 +34,26 @@ public class Triangle extends Shape {
 				bottomLeft.y, bottomLeft.z, bottomRight.x, bottomRight.y,
 				bottomRight.z });
 		mVertexBuffer.position(0);
+	}
+
+	public void draw(float[] mvpMatrix) {
+		Matrix.multiplyMM(mvpMatrix, 0, mvpMatrix, 0, mModelMatrix, 0);
+		
+		GLES20.glUseProgram(mProgram);
+
+		mPositionHandle = GLES20.glGetAttribLocation(mProgram, "vPosition");
+		GLES20.glEnableVertexAttribArray(mPositionHandle);
+		GLES20.glVertexAttribPointer(mPositionHandle, COORDS_PER_VERTEX,
+				GLES20.GL_FLOAT, false, 0, mVertexBuffer);
+
+		mColorHandle = GLES20.glGetUniformLocation(mProgram, "vColor");
+		GLES20.glUniform4fv(mColorHandle, 1, mShapeColor, 0);
+
+		mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix");
+		GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvpMatrix, 0);
+
+		GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, VERTEX_COUNT);
+		GLES20.glDisableVertexAttribArray(mPositionHandle);
 	}
 
 }

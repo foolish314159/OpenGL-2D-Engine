@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView.Renderer;
 import android.opengl.Matrix;
+import android.os.SystemClock;
 import android.util.Log;
 
 public class OpenGL2DRenderer implements Renderer {
@@ -26,8 +27,11 @@ public class OpenGL2DRenderer implements Renderer {
 
 	protected Context mContext;
 
-	// private Shape mTriangle;
-	// private Shape mRectangle;
+	public double angle = 0d;
+
+	protected int mWidth, mHeight;
+	protected float mAspectRatio;
+
 	private Sprite mBackground;
 	private Sprite mSprite;
 
@@ -37,20 +41,16 @@ public class OpenGL2DRenderer implements Renderer {
 
 	@Override
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-		clear(Color.RED);
+		clear(DEFAULT_BG_COLOR);
 
-		// mTriangle = new Triangle(-1.5f, 0.5f, 1, 1);
-		// mTriangle.setColor(255, 255, 0, 255);
-		//
-		// mRectangle = new Rectangle(0, 0.3f, 1, 1);
-		// mRectangle.setColor(255, 0, 0, 255);
 		Bitmap bmp = BitmapFactory.decodeResource(mContext.getResources(),
 				R.drawable.ic_launcher);
 		Bitmap bmpBg = BitmapFactory.decodeResource(mContext.getResources(),
 				R.drawable.tulips);
+
 		mBackground = new Sprite(-1.6f, 1, 3.2f, 2, bmpBg);
 		mBackground.init();
-		mSprite = new Sprite(0, 0.5f, .5f, .5f, bmp);
+		mSprite = new Sprite(-.25f, .25f, .5f, .5f, bmp);
 		mSprite.init();
 	}
 
@@ -58,9 +58,12 @@ public class OpenGL2DRenderer implements Renderer {
 	public void onSurfaceChanged(GL10 gl, int width, int height) {
 		GLES20.glViewport(0, 0, width, height);
 
-		float aspectRatio = (float) width / height;
-		Matrix.frustumM(mProjectionMatrix, 0, -aspectRatio, aspectRatio, -1, 1,
-				3, 7);
+		mWidth = width;
+		mHeight = height;
+
+		mAspectRatio = (float) width / height;
+		Matrix.frustumM(mProjectionMatrix, 0, -mAspectRatio, mAspectRatio, -1,
+				1, 3, 7);
 	}
 
 	@Override
@@ -71,10 +74,12 @@ public class OpenGL2DRenderer implements Renderer {
 		Matrix.translateM(mViewMatrix, 0, mCameraX, mCameraY, mCameraZ);
 		Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
 
-		// mTriangle.draw(mMVPMatrix);
-		// mRectangle.draw(mMVPMatrix);
+		mSprite.translate(
+				(float) (0 + Math.sin(SystemClock.uptimeMillis()/1000f) * 0.005f),
+				(float) (0 + Math.cos(SystemClock.uptimeMillis()/1000f) * 0.005f));
+
 		mBackground.draw(mMVPMatrix);
-		// mSprite.draw(mMVPMatrix);
+		mSprite.draw(mMVPMatrix);
 	}
 
 	protected void clearColor() {

@@ -5,6 +5,7 @@ import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
 
 import android.opengl.GLES20;
+import android.opengl.Matrix;
 
 public class Rectangle extends Shape {
 
@@ -51,6 +52,8 @@ public class Rectangle extends Shape {
 
 	@Override
 	public void draw(float[] mvpMatrix) {
+		Matrix.multiplyMM(mvpMatrix, 0, mvpMatrix, 0, mModelMatrix, 0);
+		
 		GLES20.glUseProgram(mProgram);
 
 		mPositionHandle = GLES20.glGetAttribLocation(mProgram, "vPosition");
