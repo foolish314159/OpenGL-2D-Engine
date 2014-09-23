@@ -8,6 +8,7 @@ import android.view.MotionEvent;
 public class OpenGL2DSurfaceView extends GLSurfaceView {
 
 	protected OpenGL2DRenderer mRenderer;
+	float speedX = 0.0f;
 
 	public OpenGL2DSurfaceView(Context context) {
 		super(context);
@@ -31,12 +32,18 @@ public class OpenGL2DSurfaceView extends GLSurfaceView {
 
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN:
-			if (x < getWidth() / 2)
-				mRenderer.moveCamera(0f, 0f, 0.2f);
-			else
-				mRenderer.moveCamera(0f, 0f, -0.2f);
+			speedX = 0.01f;
+			break;
+		case MotionEvent.ACTION_UP:
+			speedX = 0.0f;
 			break;
 		}
+
+		if (x < getWidth() / 2)
+			mRenderer.mSprite.setSpeedX(-speedX);
+		else
+			mRenderer.mSprite.setSpeedX(speedX);
+
 		return true;
 
 	}

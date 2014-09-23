@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
 
+import android.graphics.RectF;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 
@@ -13,6 +14,8 @@ public class Rectangle extends Shape {
 	protected static final int VERTEX_STRIDE = COORDS_PER_VERTEX * 4;
 
 	protected ShortBuffer mIndexBuffer;
+
+	protected RectF mBoundingBox;
 
 	public Rectangle(float x, float y, float w, float h) {
 		super(x, y, w, h, 4);
@@ -36,6 +39,9 @@ public class Rectangle extends Shape {
 				0);
 		Vector3f topRight = new Vector3f(mPos.x + mWidth, mPos.y, 0);
 
+		mBoundingBox = new RectF(topLeft.x, -topLeft.y, bottomRight.x,
+				-bottomRight.y);
+
 		mVertexBuffer = vb.asFloatBuffer();
 		mVertexBuffer.put(new float[] { topLeft.x, topLeft.y, topLeft.z,
 				bottomLeft.x, bottomLeft.y, bottomLeft.z, bottomRight.x,
@@ -52,8 +58,11 @@ public class Rectangle extends Shape {
 
 	@Override
 	public void draw(float[] mvpMatrix) {
-		Matrix.multiplyMM(mvpMatrix, 0, mvpMatrix, 0, mModelMatrix, 0);
+		basicDraw();
 		
+		float[] tmpMvpMatrix = new float[16];
+		Matrix.multiplyMM(tmpMvpMatrix, 0, mvpMatrix, 0, mModelMatrix, 0);
+
 		GLES20.glUseProgram(mProgram);
 
 		mPositionHandle = GLES20.glGetAttribLocation(mProgram, "vPosition");
@@ -68,12 +77,32 @@ public class Rectangle extends Shape {
 		mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix");
 		OpenGL2DRenderer.checkGlError("glGetUniformLocation");
 
-		GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvpMatrix, 0);
+		GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, tmpMvpMatrix, 0);
 		OpenGL2DRenderer.checkGlError("glUniformMatrix4fv");
 
 		GLES20.glDrawElements(GLES20.GL_TRIANGLES, INDEX_ORDER.length,
 				GLES20.GL_UNSIGNED_SHORT, mIndexBuffer);
 		GLES20.glDisableVertexAttribArray(mPositionHandle);
+	}
+
+	public boolean intersects(Rectangle rect) {
+		return RectF.intersects(mBoundingBox, rect.mBoundingBox);
+	}
+
+	@Override
+	public void translate(float x, float y) {
+		super.translate(x, y);
+
+		mBoundingBox.left = mBoundingBox.right += x;
+		mBoundingBox.top = mBoundingBox.bottom -= y;
+	}
+
+	@Override
+	public void moveTo(float x, float y) {
+		super.moveTo(x, y);
+
+		mBoundingBox.left = mBoundingBox.right = x;
+		mBoundingBox.top = mBoundingBox.bottom = y;
 	}
 
 }

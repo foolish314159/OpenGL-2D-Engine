@@ -10,7 +10,6 @@ import android.graphics.Color;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView.Renderer;
 import android.opengl.Matrix;
-import android.os.SystemClock;
 import android.util.Log;
 
 public class OpenGL2DRenderer implements Renderer {
@@ -33,7 +32,8 @@ public class OpenGL2DRenderer implements Renderer {
 	protected float mAspectRatio;
 
 	private Sprite mBackground;
-	private Sprite mSprite;
+	public Sprite mSprite;
+	private Rectangle mShrektangle;
 
 	public OpenGL2DRenderer(Context context) {
 		mContext = context;
@@ -50,8 +50,23 @@ public class OpenGL2DRenderer implements Renderer {
 
 		mBackground = new Sprite(-1.6f, 1, 3.2f, 2, bmpBg);
 		mBackground.init();
-		mSprite = new Sprite(-.25f, .25f, .5f, .5f, bmp);
+		mSprite = new Sprite(-.25f, .75f, .5f, .5f, bmp);
 		mSprite.init();
+		mShrektangle = new Rectangle(-1.3f, -0.7f, 2.6f, 0.2f);
+		mShrektangle.init();
+
+		mSprite.setPhysics(new IPhysics2D() {
+			@Override
+			public void applyPhysics(Shape shape) {
+				if (mSprite.intersects(mShrektangle)) {
+					mSprite.setSpeedY(0.0f);
+				} else {
+					mSprite.setSpeedY(-0.005f);
+				}
+
+				mSprite.update();
+			}
+		});
 	}
 
 	@Override
@@ -74,12 +89,9 @@ public class OpenGL2DRenderer implements Renderer {
 		Matrix.translateM(mViewMatrix, 0, mCameraX, mCameraY, mCameraZ);
 		Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
 
-		mSprite.translate(
-				(float) (0 + Math.sin(SystemClock.uptimeMillis()/1000f) * 0.005f),
-				(float) (0 + Math.cos(SystemClock.uptimeMillis()/1000f) * 0.005f));
-
 		mBackground.draw(mMVPMatrix);
 		mSprite.draw(mMVPMatrix);
+		mShrektangle.draw(mMVPMatrix);
 	}
 
 	protected void clearColor() {

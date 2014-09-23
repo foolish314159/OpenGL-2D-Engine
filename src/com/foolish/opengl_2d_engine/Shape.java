@@ -47,18 +47,22 @@ public abstract class Shape {
 	protected FloatBuffer mVertexBuffer;
 
 	protected float[] mModelMatrix = new float[16];
-	
+
 	protected float mShapeColor[];
 
 	protected Vector3f mPos;
 	protected float mWidth, mHeight;
+
+	protected IPhysics2D mPhysics = null;
+
+	protected float mSpeedX = 0.0f, mSpeedY = 0.0f;
 
 	public Shape(float x, float y, float w, float h, int vertexCount) {
 		mPos = new Vector3f(x, y, 0);
 		mWidth = w;
 		mHeight = h;
 		VERTEX_COUNT = vertexCount;
-		
+
 		Matrix.setIdentityM(mModelMatrix, 0);
 	}
 
@@ -81,9 +85,11 @@ public abstract class Shape {
 	}
 
 	public abstract void draw(float[] mvpMatrix);
-	
-	public Vector3f getPos() {
-		return mPos;
+
+	protected void basicDraw() {
+		if (mPhysics != null) {
+			mPhysics.applyPhysics(this);
+		}
 	}
 
 	public void setColor(int r, int g, int b, int a) {
@@ -95,5 +101,29 @@ public abstract class Shape {
 
 	public void translate(float x, float y) {
 		Matrix.translateM(mModelMatrix, 0, x, y, 0);
+		mPos.x += x;
+		mPos.y += y;
+	}
+
+	public void moveTo(float x, float y) {
+		Matrix.translateM(mModelMatrix, 0, x - mPos.x, y - mPos.y, 0);
+		mPos.x = x;
+		mPos.y = y;
+	}
+
+	public void setPhysics(IPhysics2D physics) {
+		mPhysics = physics;
+	}
+
+	public void setSpeedX(float x) {
+		mSpeedX = x;
+	}
+	
+	public void setSpeedY(float y) {
+		mSpeedY = y;
+	}
+	
+	public void update() {
+		translate(mSpeedX, mSpeedY);
 	}
 }

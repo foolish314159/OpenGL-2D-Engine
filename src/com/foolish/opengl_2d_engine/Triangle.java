@@ -37,7 +37,10 @@ public class Triangle extends Shape {
 	}
 
 	public void draw(float[] mvpMatrix) {
-		Matrix.multiplyMM(mvpMatrix, 0, mvpMatrix, 0, mModelMatrix, 0);
+		basicDraw();
+		
+		float[] tmpMvpMatrix = new float[16];
+		Matrix.multiplyMM(tmpMvpMatrix, 0, mvpMatrix, 0, mModelMatrix, 0);
 		
 		GLES20.glUseProgram(mProgram);
 
@@ -50,7 +53,7 @@ public class Triangle extends Shape {
 		GLES20.glUniform4fv(mColorHandle, 1, mShapeColor, 0);
 
 		mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix");
-		GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvpMatrix, 0);
+		GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, tmpMvpMatrix, 0);
 
 		GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, VERTEX_COUNT);
 		GLES20.glDisableVertexAttribArray(mPositionHandle);

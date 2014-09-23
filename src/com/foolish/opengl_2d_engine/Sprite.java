@@ -85,8 +85,11 @@ public class Sprite extends Rectangle {
 	}
 
 	@Override
-	public void draw(float[] mvpMatrix) {	
-		Matrix.multiplyMM(mvpMatrix, 0, mvpMatrix, 0, mModelMatrix, 0);
+	public void draw(float[] mvpMatrix) {
+		basicDraw();
+		
+		float[] tmpMvpMatrix = new float[16];
+		Matrix.multiplyMM(tmpMvpMatrix, 0, mvpMatrix, 0, mModelMatrix, 0);
 		
 		GLES20.glUseProgram(mProgram);
 
@@ -107,7 +110,7 @@ public class Sprite extends Rectangle {
 		mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix");
 		OpenGL2DRenderer.checkGlError("glGetUniformLocation");
 
-		GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvpMatrix, 0);
+		GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, tmpMvpMatrix, 0);
 		OpenGL2DRenderer.checkGlError("glUniformMatrix4fv");
 
 		mSamplerLoc = GLES20.glGetUniformLocation(mProgram, "s_texture");
