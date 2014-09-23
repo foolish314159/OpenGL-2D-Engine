@@ -32,7 +32,7 @@ public class OpenGL2DSurfaceView extends GLSurfaceView {
 
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN:
-			speedX = 0.01f;
+			speedX = 0.05f;
 			break;
 		case MotionEvent.ACTION_UP:
 			speedX = 0.0f;
@@ -40,9 +40,9 @@ public class OpenGL2DSurfaceView extends GLSurfaceView {
 		}
 
 		if (x < getWidth() / 2)
-			mRenderer.mSprite.setSpeedX(-speedX);
+			mRenderer.mSprite.setSpeed(-speedX, mRenderer.mSprite.speed().y);
 		else
-			mRenderer.mSprite.setSpeedX(speedX);
+			mRenderer.mSprite.setSpeed(speedX, mRenderer.mSprite.speed().y);
 
 		return true;
 

@@ -59,7 +59,7 @@ public class Rectangle extends Shape {
 	@Override
 	public void draw(float[] mvpMatrix) {
 		basicDraw();
-		
+
 		float[] tmpMvpMatrix = new float[16];
 		Matrix.multiplyMM(tmpMvpMatrix, 0, mvpMatrix, 0, mModelMatrix, 0);
 
@@ -93,16 +93,18 @@ public class Rectangle extends Shape {
 	public void translate(float x, float y) {
 		super.translate(x, y);
 
-		mBoundingBox.left = mBoundingBox.right += x;
-		mBoundingBox.top = mBoundingBox.bottom -= y;
+		mBoundingBox.left += x;
+		mBoundingBox.right += x;
+		mBoundingBox.top -= y;
+		mBoundingBox.bottom -= y;
 	}
 
 	@Override
 	public void moveTo(float x, float y) {
 		super.moveTo(x, y);
 
-		mBoundingBox.left = mBoundingBox.right = x;
-		mBoundingBox.top = mBoundingBox.bottom = y;
+		// mBoundingBox.left = mBoundingBox.right = x;
+		// mBoundingBox.top = mBoundingBox.bottom = y;
 	}
 
 }

@@ -52,19 +52,23 @@ public class OpenGL2DRenderer implements Renderer {
 		mBackground.init();
 		mSprite = new Sprite(-.25f, .75f, .5f, .5f, bmp);
 		mSprite.init();
+
 		mShrektangle = new Rectangle(-1.3f, -0.7f, 2.6f, 0.2f);
 		mShrektangle.init();
+		System.out.println(mShrektangle.center().x + "|"
+				+ mShrektangle.center().y);
 
 		mSprite.setPhysics(new IPhysics2D() {
 			@Override
 			public void applyPhysics(Shape shape) {
-				if (mSprite.intersects(mShrektangle)) {
-					mSprite.setSpeedY(0.0f);
-				} else {
-					mSprite.setSpeedY(-0.005f);
-				}
-
 				mSprite.update();
+
+				if (mSprite.intersects(mShrektangle)) {
+					mSprite.translate(-mSprite.speed().x, -mSprite.speed().y);
+					mSprite.setSpeed(mSprite.speed().x, 0.0f);
+				} else {
+					mSprite.setSpeed(mSprite.speed().x, -0.01f);
+				}
 			}
 		});
 	}

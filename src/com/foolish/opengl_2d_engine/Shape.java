@@ -55,7 +55,7 @@ public abstract class Shape {
 
 	protected IPhysics2D mPhysics = null;
 
-	protected float mSpeedX = 0.0f, mSpeedY = 0.0f;
+	protected Vector2f mSpeed = new Vector2f(0.0f, 0.0f);
 
 	public Shape(float x, float y, float w, float h, int vertexCount) {
 		mPos = new Vector3f(x, y, 0);
@@ -115,15 +115,20 @@ public abstract class Shape {
 		mPhysics = physics;
 	}
 
-	public void setSpeedX(float x) {
-		mSpeedX = x;
+	public void setSpeed(float x, float y) {
+		mSpeed.x = x;
+		mSpeed.y = y;
 	}
-	
-	public void setSpeedY(float y) {
-		mSpeedY = y;
+
+	public Vector2f speed() {
+		return mSpeed;
 	}
-	
+
 	public void update() {
-		translate(mSpeedX, mSpeedY);
+		translate(mSpeed.x, mSpeed.y);
+	}
+
+	public Vector2f center() {
+		return new Vector2f(mPos.x + mWidth / 2, mPos.y - mHeight / 2);
 	}
 }
