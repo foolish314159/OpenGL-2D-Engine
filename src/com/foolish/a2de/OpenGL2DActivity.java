@@ -7,9 +7,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
+
+import com.foolish.opengl_2d_engine.R;
 
 public class OpenGL2DActivity extends Activity {
 
+	protected FrameLayout mSurfaceContainer;
 	protected OpenGL2DSurfaceView mGLView;
 
 	@Override
@@ -18,8 +22,11 @@ public class OpenGL2DActivity extends Activity {
 
 		makeFullscreen();
 
+		setContentView(R.layout.gl_surface_controls_overlay);
+
+		mSurfaceContainer = (FrameLayout) findViewById(R.id.surfaceContainer);
 		mGLView = new OpenGL2DSurfaceView(this);
-		setContentView(mGLView);
+		mSurfaceContainer.addView(mGLView);
 	}
 
 	protected void makeFullscreen() {

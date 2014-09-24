@@ -1,9 +1,12 @@
 package com.foolish.a2de.graphics;
 
+import java.util.ArrayList;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import com.foolish.a2de.physics.IPhysics2D;
+import com.foolish.a2de.physics.SimpleRectanglePhysics;
 import com.foolish.opengl_2d_engine.R;
 
 import android.content.Context;
@@ -61,19 +64,7 @@ public class OpenGL2DRenderer implements Renderer {
 		System.out.println(mShrektangle.center().x + "|"
 				+ mShrektangle.center().y);
 
-		mSprite.setPhysics(new IPhysics2D() {
-			@Override
-			public void applyPhysics(Shape shape) {
-				mSprite.update();
-
-				if (mSprite.intersects(mShrektangle)) {
-					mSprite.translate(-mSprite.speed().x, -mSprite.speed().y);
-					mSprite.setSpeed(mSprite.speed().x, 0.0f);
-				} else {
-					mSprite.setSpeed(mSprite.speed().x, -0.01f);
-				}
-			}
-		});
+		mSprite.setPhysics(new SimpleRectanglePhysics(mShrektangle));
 	}
 
 	@Override
