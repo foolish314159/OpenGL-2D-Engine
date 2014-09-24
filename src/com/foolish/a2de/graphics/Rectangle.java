@@ -1,4 +1,4 @@
-package com.foolish.opengl_2d_engine;
+package com.foolish.a2de.graphics;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -7,6 +7,7 @@ import java.nio.ShortBuffer;
 import android.graphics.RectF;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
+
 
 public class Rectangle extends Shape {
 

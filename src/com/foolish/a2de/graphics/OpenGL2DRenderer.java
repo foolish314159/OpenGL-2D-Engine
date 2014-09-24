@@ -1,7 +1,10 @@
-package com.foolish.opengl_2d_engine;
+package com.foolish.a2de.graphics;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
+
+import com.foolish.a2de.physics.IPhysics2D;
+import com.foolish.opengl_2d_engine.R;
 
 import android.content.Context;
 import android.graphics.Bitmap;

@@ -1,4 +1,4 @@
-package com.foolish.opengl_2d_engine;
+package com.foolish.a2de.graphics;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

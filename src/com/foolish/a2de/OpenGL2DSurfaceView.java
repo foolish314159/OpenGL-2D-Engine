@@ -1,9 +1,11 @@
-package com.foolish.opengl_2d_engine;
+package com.foolish.a2de;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+
+import com.foolish.a2de.graphics.OpenGL2DRenderer;
 
 public class OpenGL2DSurfaceView extends GLSurfaceView {
 

@@ -1,4 +1,4 @@
-package com.foolish.opengl_2d_engine;
+package com.foolish.a2de.graphics;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.opengl.GLES20;
 import android.opengl.GLUtils;
 import android.opengl.Matrix;
+
 
 public class Sprite extends Rectangle {
 

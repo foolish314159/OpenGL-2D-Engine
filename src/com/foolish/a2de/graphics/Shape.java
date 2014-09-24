@@ -1,9 +1,11 @@
-package com.foolish.opengl_2d_engine;
+package com.foolish.a2de.graphics;
 
 import java.nio.FloatBuffer;
 
 import android.opengl.GLES20;
 import android.opengl.Matrix;
+
+import com.foolish.a2de.physics.IPhysics2D;
 
 public abstract class Shape {
 
