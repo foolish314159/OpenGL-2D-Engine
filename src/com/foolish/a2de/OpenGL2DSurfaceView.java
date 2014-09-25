@@ -3,7 +3,6 @@ package com.foolish.a2de;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 
 import com.foolish.a2de.graphics.OpenGL2DRenderer;
 
@@ -28,25 +27,4 @@ public class OpenGL2DSurfaceView extends GLSurfaceView {
 		setRenderer(mRenderer);
 	}
 
-	@Override
-	public boolean onTouchEvent(MotionEvent event) {
-		float x = event.getX();
-
-		switch (event.getAction()) {
-		case MotionEvent.ACTION_DOWN:
-			speedX = 0.05f;
-			break;
-		case MotionEvent.ACTION_UP:
-			speedX = 0.0f;
-			break;
-		}
-
-		if (x < getWidth() / 2)
-			mRenderer.mSprite.setSpeed(-speedX, mRenderer.mSprite.speed().y);
-		else
-			mRenderer.mSprite.setSpeed(speedX, mRenderer.mSprite.speed().y);
-
-		return true;
-
-	}
 }

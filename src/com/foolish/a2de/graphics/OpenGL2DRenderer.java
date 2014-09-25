@@ -1,13 +1,7 @@
 package com.foolish.a2de.graphics;
 
-import java.util.ArrayList;
-
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
-
-import com.foolish.a2de.physics.IPhysics2D;
-import com.foolish.a2de.physics.SimpleRectanglePhysics;
-import com.foolish.opengl_2d_engine.R;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -17,6 +11,9 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView.Renderer;
 import android.opengl.Matrix;
 import android.util.Log;
+
+import com.foolish.a2de.physics.SimpleRectanglePhysics;
+import com.foolish.opengl_2d_engine.R;
 
 public class OpenGL2DRenderer implements Renderer {
 
@@ -37,9 +34,8 @@ public class OpenGL2DRenderer implements Renderer {
 	protected int mWidth, mHeight;
 	protected float mAspectRatio;
 
-	private Sprite mBackground;
 	public Sprite mSprite;
-	private Rectangle mShrektangle;
+	private Rectangle mFloor, mLeftWall, mRightWall, mPlat1, mPlat2, mPlat3;
 
 	public OpenGL2DRenderer(Context context) {
 		mContext = context;
@@ -50,21 +46,37 @@ public class OpenGL2DRenderer implements Renderer {
 		clear(DEFAULT_BG_COLOR);
 
 		Bitmap bmp = BitmapFactory.decodeResource(mContext.getResources(),
-				R.drawable.ic_launcher);
-		Bitmap bmpBg = BitmapFactory.decodeResource(mContext.getResources(),
-				R.drawable.tulips);
+				R.drawable.player);
 
-		mBackground = new Sprite(-1.6f, 1, 3.2f, 2, bmpBg);
-		mBackground.init();
-		mSprite = new Sprite(-.25f, .75f, .5f, .5f, bmp);
+		mSprite = new Sprite(-.25f, .75f, .19f, .25f, bmp);
 		mSprite.init();
 
-		mShrektangle = new Rectangle(-1.3f, -0.7f, 2.6f, 0.2f);
-		mShrektangle.init();
-		System.out.println(mShrektangle.center().x + "|"
-				+ mShrektangle.center().y);
+		mFloor = new Rectangle(-1.3f, -0.7f, 2.6f, 0.2f);
+		mFloor.init();
+		mFloor.setColor(128, 128, 128, 255);
 
-		mSprite.setPhysics(new SimpleRectanglePhysics(mShrektangle));
+		mLeftWall = new Rectangle(-1.3f, -0.2f, 0.2f, 0.5f);
+		mLeftWall.init();
+		mLeftWall.setColor(128, 128, 128, 255);
+
+		mRightWall = new Rectangle(1.1f, -0.2f, 0.2f, 0.5f);
+		mRightWall.init();
+		mRightWall.setColor(128, 128, 128, 255);
+
+		mPlat1 = new Rectangle(-1.0f, -0.4f, 0.3f, 0.1f);
+		mPlat1.init();
+		mPlat1.setColor(128, 128, 128, 255);
+
+		mPlat2 = new Rectangle(0.7f, -0.1f, 0.3f, 0.1f);
+		mPlat2.init();
+		mPlat2.setColor(128, 128, 128, 255);
+
+		mPlat3 = new Rectangle(0.1f, 0.2f, 0.3f, 0.1f);
+		mPlat3.init();
+		mPlat3.setColor(128, 128, 128, 255);
+
+		mSprite.setPhysics(new SimpleRectanglePhysics(mFloor, mLeftWall,
+				mRightWall, mPlat1, mPlat2, mPlat3));
 	}
 
 	@Override
@@ -87,9 +99,13 @@ public class OpenGL2DRenderer implements Renderer {
 		Matrix.translateM(mViewMatrix, 0, mCameraX, mCameraY, mCameraZ);
 		Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
 
-		mBackground.draw(mMVPMatrix);
+		mFloor.draw(mMVPMatrix);
+		mLeftWall.draw(mMVPMatrix);
+		mRightWall.draw(mMVPMatrix);
+		mPlat1.draw(mMVPMatrix);
+		mPlat2.draw(mMVPMatrix);
+		mPlat3.draw(mMVPMatrix);
 		mSprite.draw(mMVPMatrix);
-		mShrektangle.draw(mMVPMatrix);
 	}
 
 	protected void clearColor() {

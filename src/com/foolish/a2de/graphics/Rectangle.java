@@ -8,7 +8,6 @@ import android.graphics.RectF;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 
-
 public class Rectangle extends Shape {
 
 	protected static final short INDEX_ORDER[] = { 0, 1, 2, 0, 2, 3 };
@@ -17,6 +16,8 @@ public class Rectangle extends Shape {
 	protected ShortBuffer mIndexBuffer;
 
 	protected RectF mBoundingBox;
+
+	protected boolean mIsGrounded = false;
 
 	public Rectangle(float x, float y, float w, float h) {
 		super(x, y, w, h, 4);
@@ -42,6 +43,8 @@ public class Rectangle extends Shape {
 
 		mBoundingBox = new RectF(topLeft.x, -topLeft.y, bottomRight.x,
 				-bottomRight.y);
+		System.out.println(mBoundingBox.toString() + " - "
+				+ mBoundingBox.width() + "|" + mBoundingBox.height());
 
 		mVertexBuffer = vb.asFloatBuffer();
 		mVertexBuffer.put(new float[] { topLeft.x, topLeft.y, topLeft.z,
@@ -106,6 +109,18 @@ public class Rectangle extends Shape {
 
 		// mBoundingBox.left = mBoundingBox.right = x;
 		// mBoundingBox.top = mBoundingBox.bottom = y;
+	}
+
+	public boolean isGrounded() {
+		return mIsGrounded;
+	}
+
+	public void setGrounded(boolean grounded) {
+		mIsGrounded = grounded;
+	}
+
+	public RectF bounds() {
+		return mBoundingBox;
 	}
 
 }
