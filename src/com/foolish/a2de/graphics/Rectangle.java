@@ -43,8 +43,6 @@ public class Rectangle extends Shape {
 
 		mBoundingBox = new RectF(topLeft.x, -topLeft.y, bottomRight.x,
 				-bottomRight.y);
-		System.out.println(mBoundingBox.toString() + " - "
-				+ mBoundingBox.width() + "|" + mBoundingBox.height());
 
 		mVertexBuffer = vb.asFloatBuffer();
 		mVertexBuffer.put(new float[] { topLeft.x, topLeft.y, topLeft.z,
@@ -105,10 +103,7 @@ public class Rectangle extends Shape {
 
 	@Override
 	public void moveTo(float x, float y) {
-		super.moveTo(x, y);
-
-		// mBoundingBox.left = mBoundingBox.right = x;
-		// mBoundingBox.top = mBoundingBox.bottom = y;
+		translate(x - mPos.x, y - mPos.y);
 	}
 
 	public boolean isGrounded() {

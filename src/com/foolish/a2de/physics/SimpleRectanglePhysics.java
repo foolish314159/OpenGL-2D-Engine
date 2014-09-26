@@ -55,19 +55,15 @@ public class SimpleRectanglePhysics implements IPhysics2D {
 					rect.translate(rect.speed().x, 0.0f);
 					rect.setSpeed(rect.speed().x, 0.0f);
 					rect.setGrounded(true);
-					System.out.println("bottom");
 				} else if (boundsRect.left >= boundsCollision.right) {
 					rect.translate(0.0f, rect.speed().y);
 					rect.setSpeed(0.0f, rect.speed().y);
-					System.out.println("left");
 				} else if (boundsRect.right <= boundsCollision.left) {
 					rect.translate(0.0f, rect.speed().y);
 					rect.setSpeed(0.0f, rect.speed().y);
-					System.out.println("right");
 				} else if (boundsRect.top >= boundsCollision.bottom) {
 					rect.translate(rect.speed().x, 0.0f);
 					rect.setSpeed(rect.speed().x, -0.01f);
-					System.out.println("top");
 				}
 			}
 		}

@@ -21,7 +21,7 @@ public class OpenGL2DActivity extends Activity {
 	protected FrameLayout mSurfaceContainer;
 	protected OpenGL2DSurfaceView mGLView;
 	protected ImageView mControlA, mControlB, mControlLeft, mControlRight;
-	float speedX;
+	public static float speedX = 0.0f;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -44,14 +44,25 @@ public class OpenGL2DActivity extends Activity {
 	}
 
 	private void initControlListeners() {
-		mControlA.setOnClickListener(new OnClickListener() {
+		mControlA.setOnTouchListener(new OnTouchListener() {
 			@Override
-			public void onClick(View v) {
+			public boolean onTouch(View v, MotionEvent event) {
 				Sprite sprite = mGLView.mRenderer.mSprite;
-				if (sprite.isGrounded()) {
-					sprite.setGrounded(false);
-					sprite.setSpeed(sprite.speed().x, 0.03f);
+
+				switch (event.getAction()) {
+				case MotionEvent.ACTION_DOWN:
+				case MotionEvent.ACTION_MOVE:
+					if (sprite.isGrounded()) {
+						sprite.setSpeed(sprite.speed().x, 0.03f);
+						sprite.setGrounded(false);
+					}
+					break;
+				case MotionEvent.ACTION_UP:
+					v.performClick();
+					break;
 				}
+
+				return true;
 			}
 		});
 		mControlB.setOnClickListener(new OnClickListener() {
@@ -63,18 +74,16 @@ public class OpenGL2DActivity extends Activity {
 		mControlLeft.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				Sprite sprite = mGLView.mRenderer.mSprite;
-
 				switch (event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
-					speedX = -0.03f;
+				case MotionEvent.ACTION_MOVE:
+					speedX = -0.02f;
 					break;
 				case MotionEvent.ACTION_UP:
 					speedX = 0.0f;
+					v.performClick();
 					break;
 				}
-
-				sprite.setSpeed(speedX, sprite.speed().y);
 
 				return true;
 			}
@@ -82,19 +91,16 @@ public class OpenGL2DActivity extends Activity {
 		mControlRight.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				Sprite sprite = mGLView.mRenderer.mSprite;
-
 				switch (event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
 				case MotionEvent.ACTION_MOVE:
-					speedX = 0.03f;
+					speedX = 0.02f;
 					break;
 				case MotionEvent.ACTION_UP:
 					speedX = 0.0f;
+					v.performClick();
 					break;
 				}
-
-				sprite.setSpeed(speedX, sprite.speed().y);
 
 				return true;
 			}

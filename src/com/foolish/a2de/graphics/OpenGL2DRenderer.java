@@ -12,6 +12,7 @@ import android.opengl.GLSurfaceView.Renderer;
 import android.opengl.Matrix;
 import android.util.Log;
 
+import com.foolish.a2de.OpenGL2DActivity;
 import com.foolish.a2de.physics.SimpleRectanglePhysics;
 import com.foolish.opengl_2d_engine.R;
 
@@ -98,6 +99,12 @@ public class OpenGL2DRenderer implements Renderer {
 		Matrix.setLookAtM(mViewMatrix, 0, 0f, 0f, 3f, 0f, 0f, 0f, 0f, 1f, 0f);
 		Matrix.translateM(mViewMatrix, 0, mCameraX, mCameraY, mCameraZ);
 		Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
+
+		if (mSprite.mPos.y < -1.0f) {
+			mSprite.moveTo(0.0f, 0.5f);
+		}
+
+		mSprite.setSpeed(OpenGL2DActivity.speedX, mSprite.speed().y);
 
 		mFloor.draw(mMVPMatrix);
 		mLeftWall.draw(mMVPMatrix);
